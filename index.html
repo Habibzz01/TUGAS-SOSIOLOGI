@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎵 EditMusik - Advanced Music Editor Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .sidebar {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .workspace {
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-btn {
+            background: #e3f2fd;
+            color: #667eea;
+            border: 2px dashed #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            margin: 10px 0;
+        }
+
+        .file-upload-btn:hover {
+            background: #bbdefb;
+            border-color: #764ba2;
+        }
+
+        .slider-group {
+            margin: 15px 0;
+        }
+
+        .slider-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .slider-value {
+            display: inline-block;
+            margin-left: 10px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .track-list {
+            list-style: none;
+        }
+
+        .track-item {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .track-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .track-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .track-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .track-info {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-box h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        .status-ready { background: #4CAF50; }
+        .status-playing { background: #FF9800; }
+        .status-error { background: #F44336; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .effect-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .history-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 15px 0;
+        }
+
+        .trim-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .trim-controls input[type="number"] {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .trim-controls input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        .toast.success {
+            border-left: 4px solid #4CAF50;
+        }
+
+        .toast.error {
+            border-left: 4px solid #F44336;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .waveform-placeholder {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            height: 150px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-style: italic;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎵 EditMusik Advanced Demo</h1>
+            <p>Professional Audio Editor with Custom Effects & Advanced Features</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Track Management -->
+                <div class="section">
+                    <h3>📁 Track Management</h3>
+                    <label class="file-upload-btn" for="audioFile">
+                        📤 Upload Audio File
+                    </label>
+                    <input type="file" id="audioFile" accept="audio/*">
+                    <button class="btn btn-small" onclick="createNewTrack()">➕ New Track</button>
+                </div>
+
+                <!-- Active Tracks -->
+                <div class="section">
+                    <h3>🎚️ Active Tracks</h3>
+                    <ul class="track-list" id="trackList">
+                        <li style="text-align: center; color: #999; padding: 20px;">
+                            No tracks yet
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- History Controls -->
+                <div class="section">
+                    <h3>⏮️ History</h3>
+                    <div class="history-controls">
+                        <button class="btn btn-small" onclick="undo()">↶ Undo</button>
+                        <button class="btn btn-small" onclick="redo()">↷ Redo</button>
+                    </div>
+                    <div id="historyInfo" style="font-size: 0.9em; color: #666; text-align: center; margin-top: 10px;">
+                        No history
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workspace -->
+            <div class="workspace">
+                <!-- Playback Controls -->
+                <div class="section">
+                    <h3>🎮 Playback Controls</h3>
+                    <div class="controls-grid">
+                        <button class="btn" onclick="playSelectedTrack()">▶️ Play</button>
+                        <button class="btn btn-secondary" onclick="stopSelectedTrack()">⏹️ Stop</button>
+                        <button class="btn btn-secondary" onclick="playAllTracks()">▶️ Play All</button>
+                        <button class="btn btn-secondary" onclick="stopAllTracks()">⏹️ Stop All</button>
+                    </div>
+                </div>
+
+                <!-- Volume & Pan Controls -->
+                <div class="section">
+                    <h3>🔊 Volume & Pan Control</h3>
+                    <div class="slider-group">
+                        <label>
+                            Volume: <span class="slider-value" id="volumeValue">100%</span>
+                        </label>
+                        <input type="range" id="volumeSlider" min="0" max="200" value="100" oninput="updateVolume(this.value)">
+                    </div>
+                    <div class="slider-group">
+                        <label>
+                            Pan: <span class="slider-value" id="panValue">Center</span>
+                        </label>
+                        <input type="range" id="panSlider" min="-100" max="100" value="0" oninput="updatePan(this.value)">
+                    </div>
+                </div>
+
+                <!-- Effects -->
+                <div class="section">
+                    <h3>🎛️ Audio Effects</h3>
+                    <div class="effect-list">
+                        <button class="btn btn-small" onclick="addEffect('reverb')">🌊 Reverb</button>
+                        <button class="btn btn-small" onclick="addEffect('delay')">⏱️ Delay</button>
+                        <button class="btn btn-small" onclick="addEffect('equalizer')">📊 EQ</button>
+                        <button class="btn btn-small" onclick="addEffect('compressor')">🔊 Compress</button>
+                        <button class="btn btn-small" onclick="addEffect('distortion')">⚡ Distort</button>
+                        <button class="btn btn-small" onclick="addEffect('chorus')">🎭 Chorus</button>
+                        <button class="btn btn-small" onclick="addEffect('flanger')">🌀 Flanger</button>
+                        <button class="btn btn-small" onclick="addEffect('phaser')">🔮 Phaser</button>
+                    </div>
+                </div>
+
+                <!-- Custom Effects -->
+                <div class="section">
+                    <h3>✨ Custom Effects</h3>
+                    <label class="file-upload-btn" for="customEffectFile">
+                        📤 Upload Custom Effect (Audio File)
+                    </label>
+                    <input type="file" id="customEffectFile" accept="audio/*">
+                    <div id="customEffectsList" style="margin-top: 15px;">
+                        <!-- Custom effects will be listed here -->
+                    </div>
+                </div>
+
+                <!-- Audio Trimming -->
+                <div class="section">
+                    <h3>✂️ Audio Trimming</h3>
+                    <div class="trim-controls">
+                        <input type="number" id="trimStart" placeholder="Start (seconds)" step="0.1" min="0">
+                        <input type="number" id="trimEnd" placeholder="End (seconds)" step="0.1" min="0">
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button class="btn btn-small" onclick="trimAudio()">✂️ Trim Audio</button>
+                        <button class="btn btn-small" onclick="splitAudio()">✂️ Split Audio</button>
+                    </div>
+                </div>
+
+                <!-- Export -->
+                <div class="section">
+                    <h3>💾 Export & Download</h3>
+                    <div class="controls-grid">
+                        <button class="btn btn-secondary" onclick="exportProject()">💾 Export Project</button>
+                        <button class="btn btn-secondary" onclick="downloadAudio()">⬇️ Download Audio</button>
+                    </div>
+                </div>
+
+                <!-- Info Box -->
+                <div class="info-box">
+                    <h4>📊 System Info</h4>
+                    <div id="systemInfo">
+                        <span class="status-indicator status-ready"></span>
+                        <span id="statusText">Ready to start editing!</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- EditMusik Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@xbibzlibrary/editmusik@1.0.2/dist/editmusik.min.js"></script>
+
+    <script>
+        // Initialize Editor
+        let editor = new EditMusik({
+            sampleRate: 44100,
+            maxTracks: 32,
+            quality: 'high'
+        });
+
+        let selectedTrackId = null;
+        let customEffects = new Map();
+
+        // Show Toast
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Update System Info
+        function updateSystemInfo() {
+            const info = editor.getSystemInfo();
+            const historyInfo = editor.getHistoryInfo();
+            
+            document.getElementById('systemInfo').innerHTML = `
+                <span class="status-indicator status-ready"></span>
+                Tracks: ${info.tracks} | History: ${historyInfo.current}/${historyInfo.total}
+            `;
+            
+            document.getElementById('historyInfo').innerHTML = `
+                ${historyInfo.current}/${historyInfo.total} actions<br>
+                <small>${historyInfo.canUndo ? '✓' : '✗'} Undo | ${historyInfo.canRedo ? '✓' : '✗'} Redo</small>
+            `;
+        }
+
+        // Update Track List
+        function updateTrackList() {
+            const trackList = document.getElementById('trackList');
+            const tracks = editor.getAllTracksInfo();
+            
+            if (Object.keys(tracks).length === 0) {
+                trackList.innerHTML = '<li style="text-align: center; color: #999; padding: 20px;">No tracks yet</li>';
+                return;
+            }
+            
+            trackList.innerHTML = '';
+            for (const [trackId, info] of Object.entries(tracks)) {
+                const li = document.createElement('li');
+                li.className = `track-item ${trackId === selectedTrackId ? 'active' : ''}`;
+                li.onclick = () => selectTrack(trackId);
+                li.innerHTML = `
+                    <div class="track-name">${info.name}</div>
+                    <div class="track-info">
+                        ${info.duration.toFixed(2)}s | ${info.effects} effects
+                    </div>
+                `;
+                trackList.appendChild(li);
+            }
+        }
+
+        // Select Track
+        function selectTrack(trackId) {
+            selectedTrackId = trackId;
+            updateTrackList();
+            
+            const info = editor.getTrackInfo(trackId);
+            document.getElementById('volumeSlider').value = info.volume * 100;
+            document.getElementById('volumeValue').textContent = `${(info.volume * 100).toFixed(0)}%`;
+            
+            const panPercent = info.panning * 100;
+            document.getElementById('panSlider').value = panPercent;
+            updatePanDisplay(panPercent);
+            
+            showToast(`Selected: ${info.name}`);
+        }
+
+        // Create New Track
+        function createNewTrack() {
+            const trackName = `Track ${editor.tracks.size + 1}`;
+            const trackId = editor.createTrack(trackName);
+            selectedTrackId = trackId;
+            updateTrackList();
+            updateSystemInfo();
+            showToast(`Created: ${trackName}`);
+        }
+
+        // Load Audio File
+        document.getElementById('audioFile').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            if (!selectedTrackId) {
+                selectedTrackId = editor.createTrack('Audio Track');
+            }
+            
+            try {
+                showToast('Loading audio...', 'success');
+                await editor.loadAudio(selectedTrackId, file);
+                updateTrackList();
+                updateSystemInfo();
+                showToast(`Audio loaded: ${file.name}`);
+            } catch (error) {
+                showToast(`Error: ${error.message}`, 'error');
+            }
+        });
+
+        // Playback Controls
+        function playSelectedTrack() {
+            if (!selectedTrackId) {
+                showToast('Please select a track first!', 'error');
+                return;
+            }
+            try {
+                editor.playTrack(selectedTrackId);
+                showToast('Playing track...');
+            } catch (error) {
+                showToast(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        function stopSelectedTrack() {
+            if (!selectedTrackId) return;
+            editor.stopTrack(selectedTrackId);
+            showToast('Stopped');
+        }
+
+        function playAllTracks() {
+            const tracks = editor.getAllTracksInfo();
+            for (const trackId in tracks) {
+                try {
+                    editor.playTrack(trackId);
+                } catch (e) {}
+            }
+            showToast('Playing all tracks...');
+        }
+
+        function stopAllTracks() {
+            const tracks = editor.getAllTracksInfo();
+            for (const trackId in tracks) {
+                editor.stopTrack(trackId);
+            }
+            showToast('All tracks stopped');
+        }
+
+        // Volume Control
+        function updateVolume(value) {
+            if (!selectedTrackId) return;
+            const volume = value / 100;
+            editor.setTrackVolume(selectedTrackId, volume);
+            document.getElementById('volumeValue').textContent = `${value}%`;
+            updateSystemInfo();
+        }
+
+        // Pan Control
+        function updatePan(value) {
+            if (!selectedTrackId) return;
+            const pan = value / 100;
+            editor.setTrackPan(selectedTrackId, pan);
+            updatePanDisplay(value);
+            updateSystemInfo();
+        }
+
+        function updatePanDisplay(value) {
+            let display = 'Center';
+            if (value < -10) display = `Left ${Math.abs(value)}%`;
+            else if (value > 10) display = `Right ${value}%`;
+            document.getElementById('panValue').textContent = display;
+        }
+
+        // Add Effects
+        function addEffect(effectType) {
+            if (!selectedTrackId) {
+                showToast('Please select a track first!', 'error');
+                return;
+            }
+            
+            const params = getEffectParams(effectType);
+            editor.addEffect(selectedTrackId, effectType, params);
+            updateTrackList();
+            updateSystemInfo();
+            showToast(`Added ${effectType} effect`);
+        }
+
+        function getEffectParams(effectType) {
+            const params = {
+                reverb: { mix: 0.3, decay: 2.0, duration: 2 },
+                delay: { delayTime: 0.5, feedback: 0.4, mix: 0.3 },
+                equalizer: { lowGain: 3, midGain: 0, highGain: 2 },
+                compressor: { threshold: -20, ratio: 4 },
+                distortion: { amount: 50, gain: 0.8 },
+                chorus: { depth: 0.03, rate: 1.5 },
+                flanger: { rate: 0.25, depth: 0.002 },
+                phaser: { rate: 0.5, depth: 0.8 }
+            };
+            return params[effectType] || {};
+        }
+
+        // Custom Effects
+        document.getElementById('customEffectFile').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            try {
+                showToast('Creating custom effect...', 'success');
+                const effectId = await editor.createCustomEffect(file.name, file, {
+                    type: 'convolver',
+                    mix: 0.5
+                });
+                
+                customEffects.set(effectId, file.name);
+                updateCustomEffectsList();
+                showToast(`Custom effect created: ${file.name}`);
+            } catch (error) {
+                showToast(`Error: ${error.message}`, 'error');
+            }
+        });
+
+        function updateCustomEffectsList() {
+            const container = document.getElementById('customEffectsList');
+            const effects = editor.getCustomEffects();
+            
+            if (effects.length === 0) {
+                container.innerHTML = '<div style="color: #999; text-align: center;">No custom effects</div>';
+                return;
+            }
+            
+            container.innerHTML = effects.map(effect => `
+                <button class="btn btn-small" onclick="applyCustomEffect('${effect.id}')">
+                    ✨ ${effect.name}
+                </button>
+            `).join('');
+        }
+
+        function applyCustomEffect(effectId) {
+            if (!selectedTrackId) {
+                showToast('Please select a track first!', 'error');
+                return;
+            }
+            
+            try {
+                editor.addCustomEffectToTrack(selectedTrackId, effectId);
+                updateTrackList();
+                showToast('Custom effect applied!');
+            } catch (error) {
+                showToast(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Audio Trimming
+        function trimAudio() {
+            if (!selectedTrackId) {
+                showToast('Please select a track first!', 'error');
+                return;
+            }
+            
+            const start = parseFloat(document.getElementById('trimStart').value);
+            const end = parseFloat(document.getElementById('trimEnd').value);
+            
+            if (isNaN(start) || isNaN(end)) {
+                showToast('Please enter valid start and end times!', 'error');
+                return;
+            }
+            
+            try {
+                editor.trimAudio(selectedTrackId, start, end);
+                updateTrackList();
+                updateSystemInfo();
+                showToast(`Audio trimmed: ${start}s - ${end}s`);
+            } catch (error) {
+                showToast(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        function splitAudio() {
+            if (!selectedTrackId) {
+                showToast('Please select a track first!', 'error');
+                return;
+            }
+            
+            const splitTime = parseFloat(document.getElementById('trimStart').value);
+            
+            if (isNaN(splitTime)) {
+                showToast('Please enter split time in Start field!', 'error');
+                return;
+            }
+            
+            try {
+                const result = editor.splitAudio(selectedTrackId, splitTime);
+                updateTrackList();
+                updateSystemInfo();
+                showToast(`Audio split at ${splitTime}s`);
+            } catch (error) {
+                showToast(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        // History Controls
+        function undo() {
+            const success = editor.undo();
+            if (success) {
+                updateTrackList();
+                updateSystemInfo();
+                showToast('Action undone');
+            } else {
+                showToast('Nothing to undo', 'error');
+            }
+        }
+
+        function redo() {
+            const success = editor.redo();
+            if (success) {
+                updateTrackList();
+                updateSystemInfo();
+                showToast('Action redone');
+            } else {
+                showToast('Nothing to redo', 'error');
+            }
+        }
+
+        // Export & Download
+        async function exportProject() {
+            try {
+                showToast('Exporting project...', 'success');
+                await editor.exportProject('wav', 'high');
+                editor.downloadProject();
+                showToast('Project exported!');
+            } catch (error) {
+                showToast(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function downloadAudio() {
+            try {
+                showToast('Preparing download...', 'success');
+                await editor.exportProject('wav', 'high');
+                editor.downloadAudio('wav');
+                showToast('Audio downloaded!');
+            } catch (error) {
+                showToast(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Initialize
+        updateSystemInfo();
+        updateTrackList();
+        
+        console.log('%c🎵 EditMusik Demo Ready!', 'color: #667eea; font-size: 20px; font-weight: bold;');
+        console.log('Library version:', editor.version);
+    </script>
+</body>
+</html>
